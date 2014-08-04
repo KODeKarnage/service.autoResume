@@ -122,9 +122,7 @@ def recordPosition():
       f.write(playlist)
       f.write('\n')
       f.write(playlist_position)
-  else:
-    if os.path.exists(PATH):
-      os.remove(PATH)
+
 
 
 def log(msg):
