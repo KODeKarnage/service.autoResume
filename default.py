@@ -68,10 +68,8 @@ def resume():
           position = float(f.readline())
           try:
             playlist = f.readline().split('_-|-_')
-            playlist_position = int(f.readline())
           except:
             playlist = []
-            playlist_position = 0
 
         # load playlist contents
         if playlist:
@@ -85,6 +83,11 @@ def resume():
           for x in playlist[1:]:
             add_this['params']['item']['file'] = x
             json_query(add_this)
+
+          try:
+            playlist_position = playlist.index(mediaFile) - 1
+          except:
+            playlist_position = 0
 
           xbmc.Player().play(xbmc.PlayList(add_this['params']['playlistid']), startpos=playlist_position)
 
@@ -112,7 +115,6 @@ def recordPosition():
     mediaFile = xbmc.Player().getPlayingFile()
     position = xbmc.Player().getTime()
     playlist = get_playlist()
-    playlist_position = xbmc.getInfoLabel('Playlist.Position()')
     # Write info to file
     with open(PATH, 'w') as f:
       f.write(mediaFile)
@@ -120,10 +122,6 @@ def recordPosition():
       f.write(repr(position))
       f.write('\n')
       f.write(playlist)
-      f.write('\n')
-      f.write(playlist_position)
-
-
 
 def log(msg):
   xbmc.log("%s: %s" % (ADDON_ID, msg), xbmc.LOGDEBUG)
@@ -134,3 +132,4 @@ if __name__ == "__main__":
   while (not xbmc.abortRequested):
     recordPosition()
     sleep(FREQUENCY)
+
