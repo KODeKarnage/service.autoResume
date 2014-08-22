@@ -16,7 +16,6 @@
 import os
 import xbmc
 import xbmcaddon
-from time import sleep
 import json
 
 
@@ -53,7 +52,7 @@ def get_playlist():
       for i in res['result']['items']:
         items.append((i['id'],i['file']))
       items.sort()
-      return 'music_-|-_' + '_-|-_'.join([x[1] for x in items])  
+      return 'music_-|-_' + '_-|-_'.join([x[1] for x in items])
 
   return ''
 
@@ -72,14 +71,14 @@ def resume():
             playlist = []
 
         # load playlist contents
-        if playlist:
+        if len(playlist) > 1:
           add_this = {'jsonrpc': '2.0','id': 1, "method": 'Playlist.Add', "params": {'item' : {'file' : 'placeholder' }, 'playlistid' : 'placeholder'}}
 
           if playlist[0] == 'music':
             add_this['params']['playlistid'] = 0
           else:
             add_this['params']['playlistid'] = 1
-          
+
           for x in playlist[1:]:
             add_this['params']['item']['file'] = x
             json_query(add_this)
@@ -96,18 +95,18 @@ def resume():
           xbmc.Player().play(mediaFile)
 
         while (not xbmc.Player().isPlaying()):
-          sleep(0.5)
-        sleep(1)
+          xbmc.sleep(0.5)
+        xbmc.sleep(1)
         # Seek to last recorded position.
         xbmc.Player().seekTime(position)
-        sleep(1)
+        xbmc.sleep(1)
         # Make sure it actually got there.
         if abs(position - xbmc.Player().getTime()) > 30:
           xbmc.Player().seekTime(position)
       break
     else:
       # If the folder didn't exist maybe we need to wait longer for the drive to be mounted.
-      sleep(5)
+      xbmc.sleep(5)
 
 
 def recordPosition():
@@ -131,5 +130,5 @@ if __name__ == "__main__":
   resume()
   while (not xbmc.abortRequested):
     recordPosition()
-    sleep(FREQUENCY)
+    xbmc.sleep(FREQUENCY)
 
